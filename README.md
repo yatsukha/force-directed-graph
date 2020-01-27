@@ -4,7 +4,7 @@ Implementation of graph drawing using force directed algorithm, specifically the
 
 ## Examples
 
-In GIFs below the algorithm was purposefully slowed down so the changes can be displayed.
+In GIFs below the algorithm was purposefully slowed down so the changes can be observed.
 
 Responding to addition of vertices and connections:
 
