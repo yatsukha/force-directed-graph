@@ -4,82 +4,75 @@
 #include <vector>
 #include <random>
 #include <string>
+#include <iostream>
+#include <algorithm>
 
 #include <emscripten/bind.h>
 
-namespace em = ::emscripten;
+#include "fd.hpp"
 
 // used as a closed namespace
 class graph final {
-  public:
+ private:
+  static ::fd::graph g;
 
-    using scalar = float;
+ public:
+  static void add_point(::fd::unit const x, ::fd::unit const y, 
+                        ::std::vector<::fd::vertex> const neighbours) {
+    auto& [pos, connections, _] = g;
+    auto const id = pos.size();
+    for (auto const nb : neighbours)
+      connections[nb].push_back(id);
+    connections.emplace_back(::std::move(neighbours));
+    pos.push_back({x, y});
+  }
 
-    struct point {
-      scalar x;
-      scalar y;
-    };
+  static void connect(::fd::vertex const u, ::fd::vertex const v) {
+    if (::std::find(g.c[u].begin(), g.c[u].end(), v) == g.c[u].end())
+      g.c[u].push_back(v);
+    if (::std::find(g.c[v].begin(), g.c[v].end(), u) == g.c[v].end())
+      g.c[v].push_back(u);
+  }
 
-  private:
+  static void disconnect(::fd::vertex const u, ::fd::vertex const v) {
+    if (auto iter = ::std::find(g.c[u].begin(), g.c[u].end(), v); 
+        iter != g.c[u].end())
+      g.c[u].erase(iter);
+    if (auto iter = ::std::find(g.c[v].begin(), g.c[v].end(), u);
+        iter != g.c[v].end())
+      g.c[v].erase(iter);
+  }
 
-    static scalar random() {
-      ::std::mt19937 static mt{::std::random_device{}()};
-      ::std::uniform_real_distribution<scalar> static dist{
-        static_cast<scalar>(-1),
-        static_cast<scalar>(1)
-      };
+  static ::fd::graph const* get() noexcept {
+    return &g;
+  }
 
-      return dist(mt);
-    }
-
-    using range = point;
-
-    range constexpr static x_range = {
-      static_cast<scalar>(-1), static_cast<scalar>(1)};
-
-    range constexpr static y_range = {
-      static_cast<scalar>(-1), static_cast<scalar>(1)};
-
-    graph() = default;
-
-  public:
-
-    ::std::map<::std::string, point> static points;
-    ::std::map<::std::string, ::std::vector<::std::string>> static connections;
-      
-    static void connect(::std::string const u, ::std::string const v) {
-      if (points.find(u) == ::std::end(points))
-        points[u] = {random(), random()};
-
-      if (points.find(v) == ::std::end(points))
-        points[v] = {random(), random()};
-
-      connections[u].push_back(v);
-      connections[v].push_back(u);
-    }
-
-    static void advance() {
-      
-    }
+  static void advance(::fd::unit const t) {
+    g = ::fd::advance(g, t); // 0.001
+  }
 
 };
 
-using namespace ::em;
+using namespace ::emscripten;
 
 EMSCRIPTEN_BINDINGS(graph_binding) {
+  value_object<::fd::point>("point")
+    .field("x", &::fd::point::first)
+    .field("y", &::fd::point::second);
 
-  value_object<::graph::point>("point")
-    .field("x", &::graph::point::x)
-    .field("y", &::graph::point::y);
+  register_vector<::fd::point>("PointVector");
+  register_vector<::fd::vertex>("VertexVector");
+  register_vector<::std::vector<::fd::vertex>>("NeighbourVector");
+
+  class_<::fd::graph>("fdGraph")
+    .property("p", &::fd::graph::p)
+    .property("c", &::fd::graph::c)
+    .property("d", &::fd::graph::d);
 
   class_<::graph>("graph")
-    .class_property("points", &::graph::points)
-    .class_property("connections", &::graph::connections)
-    .class_function("connect", &::graph::connect);
-
-  register_vector<::std::string>("VectorString");
-
-  register_map<::std::string, ::graph::point>("MapStringPoint");
-  register_map<::std::string, ::std::vector<::std::string>>("MapStringVector");
-
+    .class_function("add_point",  &::graph::add_point)
+    .class_function("connect",    &::graph::connect)
+    .class_function("disconnect", &::graph::disconnect)
+    .class_function("get",        &::graph::get,     allow_raw_pointers())
+    .class_function("advance",    &::graph::advance, allow_raw_pointers());
 }

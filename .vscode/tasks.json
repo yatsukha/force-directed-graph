@@ -1,0 +1,72 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558 
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "g++ build active file",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-std=c++17",
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}.out",
+        "&&",
+        "echo",
+        "DONE"
+      ],
+      "options": {
+        "cwd": "/usr/bin"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    { 
+      "type": "shell",
+      "label": "em++ build active file",
+      "command": "em++",
+      "args": [
+        "graph.cpp",
+        //"-O3",
+        "-std=c++17",
+        "-g",
+        "--bind",
+        "-s",
+        "WASM=1",
+        /* "-s",
+        "ASSERTIONS=1", */
+        "-s",
+        //"EXPORT_ALL=1",
+        "-o",
+        "out/main.js",
+        "&&",
+        "echo",
+        "DONE"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    }
+  ]
+}
