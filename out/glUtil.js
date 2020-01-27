@@ -20,9 +20,6 @@ function genColor() {
   return [Math.random(), Math.random(), Math.random()];
 }
 
-/**
- * @return {WebGL2RenderingContex} context
- */
 function getRenderingContext() {
   let canvas = document.getElementsByTagName('canvas')[0];
   let gl = canvas.getContext('webgl2');
@@ -41,70 +38,7 @@ function getRenderingContext() {
     shader: shaderProgram
   };
 
-  /* let stop = false;
-  document.getElementById('stop').addEventListener('click', function () {
-    this.innerText = (stop = !stop) ? 'start' : 'stop';
-  });
-
-  const precision = 5;
-  let vbos = [];
-  document.getElementById('add').addEventListener('click', () => {
-    const vbo = gl.createBuffer();
-    vbos.push(vbo);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      genCircle(0.1, Math.random() * 2 - 1, Math.random() * 2 - 1, precision),
-      gl.STREAM_DRAW
-    );
-    document.getElementById('list').appendChild((() => {
-      let p = document.createElement('p');
-      p.innerText = '' + vbos.length - 1;
-      return p;
-    })());
-  })
-
-  document.getElementById('update').addEventListener('click', () => {
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbos[Number.parseInt(document.getElementById('id').value)]);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      genCircle(
-        0.1,
-        Number.parseFloat(document.getElementById('x').value),
-        Number.parseFloat(document.getElementById('y').value),
-        precision),
-      gl.STREAM_DRAW
-    );
-  });
-
-  let iter = 0;
-  while (true) {
-    await sleep(1000 / 60);
-    if (stop) {
-      await sleep(200);
-      continue;
-    }
-    gl.clearColor((Math.sin(iter++ / 50) + 1) / 3, 1.0, 1.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    for (const vbo of vbos) {
-      gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-      gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(0);
-      gl.drawArrays(gl.TRIANGLE_FAN, 0, precision);
-    }
-  }
- */
-  /* for (let i = 0; !stop; ++i) {
-    await sleep(1000 / 60);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    genCircleInPlace(circle, Math.sin(i / 50) / 2 + 0.5, 0, 0);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, circle);
-
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, precision);
-  } */
+  
 }
 
 // raw shaders
