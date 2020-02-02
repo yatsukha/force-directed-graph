@@ -35,6 +35,8 @@
         }
 
         try {
+          document.getElementById('mass').value = "";
+
           let stop = true;
           document.getElementById('stop').addEventListener('click', function () {
             this.innerText = (stop = !stop) ? 'start' : 'stop';
