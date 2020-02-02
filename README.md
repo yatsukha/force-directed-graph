@@ -2,6 +2,8 @@
 
 Implementation of graph drawing using force directed algorithm, specifically the Fruchterman-Reingold variant.
 
+See it action [here](https://yatsukha.github.io/force-directed-graph/main.html).
+
 ## Examples
 
 In GIFs below the algorithm was purposefully slowed down so the changes can be observed.
@@ -20,7 +22,7 @@ Responding to deletion of connections:
 
 ## Details
 
-The algorithm was written in C++ and then compiled into WebAssembly using emsdk so that it can be used in JavaScript. The graph was displayed using WEBGL (3.0 es) in a canvas on a website. The website has several graph manipulation functionalities (add, connect, disconnect, etc.) and a slider for controlling algorithm speed.
+The algorithm was written in C++ and then compiled into WebAssembly using emsdk so that it can be used in JavaScript. The graph was displayed using WEBGL (3.0 es) in a canvas on a website. The [website](https://yatsukha.github.io/force-directed-graph/main.html) has several graph manipulation functionalities (add, connect, disconnect, etc.) and a slider for controlling algorithm speed.
 
 ![website](images/website.png)
 
@@ -39,7 +41,7 @@ There is also a VSCode task in the repository that can be used to build. Keep in
 
 ## Running
 
-To run the website, run any http server and set `out` as the root folder for static content. After that just connect to `localhost:8080/main.html` or some other port you have defined.
+To run the website, first build the project, and then run any http server and set `out` as the root folder for static content. After that just connect to `localhost:8080/main.html` or some other port you have defined.
 
 Example that uses the [darkhttpd](https://unix4lyfe.org/darkhttpd/) tiny webserver (from root folder of project):
 
